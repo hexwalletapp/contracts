@@ -8,7 +8,7 @@ struct Balance {
     string symbol;
     uint8 decimals;
     uint256 balance;
-    address addy;
+    address tokenAddress;
 }
 
 contract ERC20View {
@@ -32,7 +32,7 @@ contract ERC20View {
                     symbol: token.symbol(),
                     decimals: token.decimals(),
                     balance: token.balanceOf(addresses[i]),
-                    addy: tokenAddresses[j]
+                    tokenAddress: tokenAddresses[j]
                 });
 
                 index++;
