@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Balance, Type} from "./Shared/TokenBundle.sol";
+import {IERC20Token} from "./Shared/IERC20Token.sol";
 
 contract ERC20View {
     function balanceOf(address[] memory addresses, address[] memory tokenAddresses)
@@ -18,7 +18,7 @@ contract ERC20View {
 
         for (uint256 i = 0; i < addresses.length; i++) {
             for (uint256 j = 0; j < tokenAddresses.length; j++) {
-                ERC20 token = ERC20(tokenAddresses[j]);
+                IERC20Token token = IERC20Token(tokenAddresses[j]);
 
                 balances[index] = Balance({
                     name: token.name(),
