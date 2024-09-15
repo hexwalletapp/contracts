@@ -42,6 +42,7 @@ struct Balance {
     string name;
     string symbol;
     uint8 decimals;
+    uint256 index;
     uint256 balance;
     address tokenAddress;
     Type tokenType;

@@ -24,6 +24,7 @@ contract ERC20View {
                     name: token.name(),
                     symbol: token.symbol(),
                     decimals: token.decimals(),
+                    index: 0,
                     balance: token.balanceOf(addresses[i]),
                     tokenAddress: tokenAddresses[j],
                     tokenType: Type.ERC20
