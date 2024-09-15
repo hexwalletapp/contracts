@@ -2,14 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {ERC20} from "@openzeppelin/token/ERC20/ERC20.sol";
-
-struct Balance {
-    string name;
-    string symbol;
-    uint8 decimals;
-    uint256 balance;
-    address tokenAddress;
-}
+import {Balance} from "./Shared/TokenBundle.sol";
 
 contract ERC20View {
     function balanceOf(address[] memory addresses, address[] memory tokenAddresses)
@@ -32,7 +25,8 @@ contract ERC20View {
                     symbol: token.symbol(),
                     decimals: token.decimals(),
                     balance: token.balanceOf(addresses[i]),
-                    tokenAddress: tokenAddresses[j]
+                    tokenAddress: tokenAddresses[j],
+                    tokenType: Type.ERC20
                 });
 
                 index++;
