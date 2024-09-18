@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import {Script, console} from "forge-std/Script.sol";
 import {ERC20View} from "../src/ERC20View.sol";
 
-contract CounterScript is Script {
+contract ERC20ViewScript is Script {
     ERC20View public erc20View;
 
     function setUp() public {}
