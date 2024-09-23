@@ -5,7 +5,7 @@ import {Balance, Type, TokenSet, Action, Name} from "./Shared/TokenSet.sol";
 import {IERC20Token} from "./Shared/IERC20Token.sol";
 
 contract ERC20View {
-    function balanceOf(address publicAddress, address tokenAddress) public view returns (TokenSet memory) {
+    function balanceOf(address publicAddress, address tokenAddress) public view returns (TokenSet[] memory) {
         require(publicAddress != address(0), "Invalid public key");
         require(tokenAddress != address(0), "Invalid token address");
 
@@ -31,8 +31,9 @@ contract ERC20View {
         actions[1] = Action.RECEIVE;
         actions[2] = Action.SWAP;
 
-        TokenSet memory tokenSet = TokenSet({name: Name.COIN, inputs: inputs, outputs: outputs, actions: actions});
+        TokenSet[] memory tokenSets = new TokenSet[](1);
+        tokenSets[0] = TokenSet({name: Name.COIN, inputs: inputs, outputs: outputs, actions: actions});
 
-        return tokenSet;
+        return tokenSets;
     }
 }
