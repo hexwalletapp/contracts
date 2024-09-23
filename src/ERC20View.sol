@@ -1,39 +1,38 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {Balance, Type} from "./Shared/TokenBundle.sol";
+import {Balance, Type, TokenSet, Action, Name} from "./Shared/TokenSet.sol";
 import {IERC20Token} from "./Shared/IERC20Token.sol";
 
 contract ERC20View {
-    function balanceOf(address[] memory addresses, address[] memory tokenAddresses)
-        public
-        view
-        returns (Balance[] memory)
-    {
-        require(addresses.length > 0, "Addresses array is empty");
-        require(tokenAddresses.length > 0, "Token addresses array is empty");
+    function balanceOf(address publicAddress, address tokenAddress) public view returns (TokenSet memory) {
+        require(publicAddress != address(0), "Invalid public key");
+        require(tokenAddress != address(0), "Invalid token address");
 
-        Balance[] memory balances = new Balance[](addresses.length * tokenAddresses.length);
-        uint256 index = 0;
+        IERC20Token token = IERC20Token(tokenAddress);
 
-        for (uint256 i = 0; i < addresses.length; i++) {
-            for (uint256 j = 0; j < tokenAddresses.length; j++) {
-                IERC20Token token = IERC20Token(tokenAddresses[j]);
+        Balance memory balance = Balance({
+            name: token.name(),
+            symbol: token.symbol(),
+            decimals: token.decimals(),
+            index: 0,
+            balance: token.balanceOf(publicAddress),
+            tokenAddress: tokenAddress,
+            tokenType: Type.ERC20
+        });
 
-                balances[index] = Balance({
-                    name: token.name(),
-                    symbol: token.symbol(),
-                    decimals: token.decimals(),
-                    index: 0,
-                    balance: token.balanceOf(addresses[i]),
-                    tokenAddress: tokenAddresses[j],
-                    tokenType: Type.ERC20
-                });
+        Balance[] memory inputs = new Balance[](1);
+        inputs[0] = balance;
 
-                index++;
-            }
-        }
+        Balance[] memory outputs = new Balance[](0);
 
-        return balances;
+        Action[] memory actions = new Action[](3);
+        actions[0] = Action.SEND;
+        actions[1] = Action.RECEIVE;
+        actions[2] = Action.SWAP;
+
+        TokenSet memory tokenSet = TokenSet({name: Name.COIN, inputs: inputs, outputs: outputs, actions: actions});
+
+        return tokenSet;
     }
 }

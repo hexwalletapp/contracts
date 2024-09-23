@@ -7,6 +7,18 @@ enum Type {
     ERC1155
 }
 
+enum Name {
+    COIN,
+    NFT,
+    MINE,
+    STAKE,
+    LEND,
+    BORROW,
+    LIQUIDITY,
+    FARM,
+    BETTING_MARKET
+}
+
 enum Action {
     CLAIM,
     SEND,
@@ -48,8 +60,9 @@ struct Balance {
     Type tokenType;
 }
 
-struct TokenBundle {
-    Balance[] input;
-    Balance[] output;
+struct TokenSet {
+    Name name;
+    Balance[] inputs;
+    Balance[] outputs;
     Action[] actions;
 }

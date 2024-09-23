@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {Balance, Type} from "./Shared/TokenBundle.sol";
+import {Balance, Type} from "./Shared/TokenSet.sol";
 import {IERC20Token} from "./Shared/IERC20Token.sol";
 import {IWithdrawalQueue, WithdrawalRequestStatus} from "./Shared/IWithdrawalQueue.sol";
 
