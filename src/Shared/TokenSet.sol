@@ -16,7 +16,8 @@ enum Name {
     BORROW,
     LIQUIDITY,
     FARM,
-    BETTING_MARKET
+    BETTING_MARKET,
+    CLAIM
 }
 
 enum Action {
