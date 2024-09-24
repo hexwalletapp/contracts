@@ -62,6 +62,7 @@ struct Balance {
 }
 
 struct TokenSet {
+    string note;
     Name name;
     Balance[] inputs;
     Balance[] outputs;

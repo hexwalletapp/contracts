@@ -34,7 +34,7 @@ contract LIDOView {
         actions[3] = Action.WITHDRAW_STAKE;
 
         TokenSet[] memory tokenSets = new TokenSet[](1);
-        tokenSets[0] = TokenSet({name: Name.STAKE, inputs: inputs, outputs: outputs, actions: actions});
+        tokenSets[0] = TokenSet({note: "", name: Name.STAKE, inputs: inputs, outputs: outputs, actions: actions});
 
         return tokenSets;
     }
@@ -86,13 +86,13 @@ contract LIDOView {
                 actions[1] = Action.CLAIM;
 
                 tokenSets[validTokenSetCount] =
-                    TokenSet({name: Name.CLAIM, inputs: inputs, outputs: outputs, actions: actions});
+                    TokenSet({note: "", name: Name.CLAIM, inputs: inputs, outputs: outputs, actions: actions});
             } else {
                 Action[] memory actions = new Action[](1);
                 actions[0] = Action.SEND;
 
                 tokenSets[validTokenSetCount] =
-                    TokenSet({name: Name.CLAIM, inputs: inputs, outputs: outputs, actions: actions});
+                    TokenSet({note: "", name: Name.CLAIM, inputs: inputs, outputs: outputs, actions: actions});
             }
 
             validTokenSetCount++;

@@ -32,7 +32,7 @@ contract ERC20View {
         actions[2] = Action.SWAP;
 
         TokenSet[] memory tokenSets = new TokenSet[](1);
-        tokenSets[0] = TokenSet({name: Name.COIN, inputs: inputs, outputs: outputs, actions: actions});
+        tokenSets[0] = TokenSet({note: "", name: Name.COIN, inputs: inputs, outputs: outputs, actions: actions});
 
         return tokenSets;
     }

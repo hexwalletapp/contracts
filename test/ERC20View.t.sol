@@ -22,7 +22,7 @@ contract ERC20ViewTest is Test {
         mockToken2.mint(testWallet, 500 * 10 ** 6);
     }
 
-    function test_WalletHasToken1() public {
+    function test_WalletHasToken1() public view {
         TokenSet[] memory result = erc20View.balanceOf(testWallet, address(mockToken1));
         assertEq(result.length, 1, "Should return 1 TokenSet");
         assertEq(result[0].inputs.length, 1, "Should return 1 balance result");
@@ -35,7 +35,7 @@ contract ERC20ViewTest is Test {
         assertEq(uint256(balance.tokenType), uint256(Type.ERC20), "Token1 type mismatch");
     }
 
-    function test_WalletHasToken2() public {
+    function test_WalletHasToken2() public view {
         TokenSet[] memory result = erc20View.balanceOf(testWallet, address(mockToken2));
         assertEq(result.length, 1, "Should return 1 TokenSet");
         assertEq(result[0].inputs.length, 1, "Should return 1 balance result");
@@ -48,7 +48,7 @@ contract ERC20ViewTest is Test {
         assertEq(uint256(balance.tokenType), uint256(Type.ERC20), "Token2 type mismatch");
     }
 
-    function test_TokenSetStructure() public {
+    function test_TokenSetStructure() public view {
         TokenSet[] memory result = erc20View.balanceOf(testWallet, address(mockToken1));
         assertEq(result.length, 1, "Should return 1 TokenSet");
         assertEq(uint256(result[0].name), uint256(Name.COIN), "TokenSet name should be COIN");
@@ -70,7 +70,7 @@ contract ERC20ViewTest is Test {
         erc20View.balanceOf(testWallet, address(0));
     }
 
-    function test_ZeroBalance() public {
+    function test_ZeroBalance() public view {
         address emptyWallet = address(0x5678);
         TokenSet[] memory result = erc20View.balanceOf(emptyWallet, address(mockToken1));
         assertEq(result.length, 1, "Should return 1 TokenSet even for zero balance");
