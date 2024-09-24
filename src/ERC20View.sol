@@ -11,7 +11,16 @@ contract ERC20View {
 
         IERC20Token token = IERC20Token(tokenAddress);
 
-        Balance memory balance = Balance({
+        TokenSet[] memory tokenSets = new TokenSet[](1);
+        tokenSets[0] = TokenSet({
+            note: "",
+            name: Name.COIN,
+            inputs: new Balance[](1),
+            outputs: new Balance[](0),
+            actions: new Action[](3)
+        });
+
+        tokenSets[0].inputs[0] = Balance({
             name: token.name(),
             symbol: token.symbol(),
             decimals: token.decimals(),
@@ -21,18 +30,9 @@ contract ERC20View {
             tokenType: Type.ERC20
         });
 
-        Balance[] memory inputs = new Balance[](1);
-        inputs[0] = balance;
-
-        Balance[] memory outputs = new Balance[](0);
-
-        Action[] memory actions = new Action[](3);
-        actions[0] = Action.SEND;
-        actions[1] = Action.RECEIVE;
-        actions[2] = Action.SWAP;
-
-        TokenSet[] memory tokenSets = new TokenSet[](1);
-        tokenSets[0] = TokenSet({note: "", name: Name.COIN, inputs: inputs, outputs: outputs, actions: actions});
+        tokenSets[0].actions[0] = Action.SEND;
+        tokenSets[0].actions[1] = Action.RECEIVE;
+        tokenSets[0].actions[2] = Action.SWAP;
 
         return tokenSets;
     }

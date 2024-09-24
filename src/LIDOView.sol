@@ -10,31 +10,29 @@ contract LIDOView {
         require(publicAddress != address(0), "Public Address is empty");
         require(tokenAddress != address(0), "Token address is empty");
 
-        IERC20Token token = IERC20Token(tokenAddress);
+        TokenSet[] memory tokenSets = new TokenSet[](1);
+        tokenSets[0] = TokenSet({
+            note: "",
+            name: Name.STAKE,
+            inputs: new Balance[](1),
+            outputs: new Balance[](0),
+            actions: new Action[](4)
+        });
 
-        Balance memory balance = Balance({
-            name: token.name(),
-            symbol: token.symbol(),
-            decimals: token.decimals(),
+        tokenSets[0].inputs[0] = Balance({
+            name: IERC20Token(tokenAddress).name(),
+            symbol: IERC20Token(tokenAddress).symbol(),
+            decimals: IERC20Token(tokenAddress).decimals(),
             index: 0,
-            balance: token.balanceOf(publicAddress),
+            balance: IERC20Token(tokenAddress).balanceOf(publicAddress),
             tokenAddress: tokenAddress,
             tokenType: Type.ERC20
         });
 
-        Balance[] memory inputs = new Balance[](1);
-        inputs[0] = balance;
-
-        Balance[] memory outputs = new Balance[](0);
-
-        Action[] memory actions = new Action[](4);
-        actions[0] = Action.SEND;
-        actions[1] = Action.RECEIVE;
-        actions[2] = Action.SWAP;
-        actions[3] = Action.WITHDRAW_STAKE;
-
-        TokenSet[] memory tokenSets = new TokenSet[](1);
-        tokenSets[0] = TokenSet({note: "", name: Name.STAKE, inputs: inputs, outputs: outputs, actions: actions});
+        tokenSets[0].actions[0] = Action.SEND;
+        tokenSets[0].actions[1] = Action.RECEIVE;
+        tokenSets[0].actions[2] = Action.SWAP;
+        tokenSets[0].actions[3] = Action.WITHDRAW_STAKE;
 
         return tokenSets;
     }
@@ -44,61 +42,43 @@ contract LIDOView {
         require(tokenAddress != address(0), "Token address is empty");
 
         IWithdrawalQueue token = IWithdrawalQueue(tokenAddress);
-
-        // Get withdrawal requests for the current user
         uint256[] memory requestIds = token.getWithdrawalRequests(publicAddress);
-
-        // Fetch the withdrawal statuses for all request IDs at once
         WithdrawalRequestStatus[] memory statuses = token.getWithdrawalStatus(requestIds);
 
-        // Create a dynamic array to hold valid TokenSets
         TokenSet[] memory tokenSets = new TokenSet[](requestIds.length);
         uint256 validTokenSetCount = 0;
 
-        // Loop through each requestId and its corresponding status
         for (uint256 i = 0; i < requestIds.length; i++) {
-            uint256 requestId = requestIds[i];
-            WithdrawalRequestStatus memory status = statuses[i];
-
-            // Skip if the request is already claimed
-            if (status.isClaimed) {
+            if (statuses[i].isClaimed) {
                 continue;
             }
 
-            Balance memory balance = Balance({
+            tokenSets[validTokenSetCount] = TokenSet({
+                note: "",
+                name: Name.CLAIM,
+                inputs: new Balance[](1),
+                outputs: new Balance[](0),
+                actions: statuses[i].isFinalized ? new Action[](2) : new Action[](1)
+            });
+
+            tokenSets[validTokenSetCount].inputs[0] = Balance({
                 name: token.name(),
                 symbol: token.symbol(),
-                decimals: 0, // Assuming decimals do not apply for stETH withdrawal requests
-                index: requestId,
-                balance: status.amountOfStETH,
+                decimals: 0,
+                index: requestIds[i],
+                balance: statuses[i].amountOfStETH,
                 tokenAddress: tokenAddress,
                 tokenType: Type.ERC721
             });
 
-            Balance[] memory inputs = new Balance[](1);
-            inputs[0] = balance;
-
-            Balance[] memory outputs = new Balance[](0);
-
-            if (status.isFinalized) {
-                Action[] memory actions = new Action[](2);
-                actions[0] = Action.SEND;
-                actions[1] = Action.CLAIM;
-
-                tokenSets[validTokenSetCount] =
-                    TokenSet({note: "", name: Name.CLAIM, inputs: inputs, outputs: outputs, actions: actions});
-            } else {
-                Action[] memory actions = new Action[](1);
-                actions[0] = Action.SEND;
-
-                tokenSets[validTokenSetCount] =
-                    TokenSet({note: "", name: Name.CLAIM, inputs: inputs, outputs: outputs, actions: actions});
+            tokenSets[validTokenSetCount].actions[0] = Action.SEND;
+            if (statuses[i].isFinalized) {
+                tokenSets[validTokenSetCount].actions[1] = Action.CLAIM;
             }
 
             validTokenSetCount++;
         }
 
-        // Resize the tokenSets array to remove empty slots
         TokenSet[] memory validTokenSets = new TokenSet[](validTokenSetCount);
         for (uint256 k = 0; k < validTokenSetCount; k++) {
             validTokenSets[k] = tokenSets[k];
